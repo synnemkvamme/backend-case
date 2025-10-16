@@ -19,8 +19,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ProductServiceTest {
 
@@ -102,6 +101,53 @@ public class ProductServiceTest {
         verify(productRepository).findById(10l);
         fail("Didn't throw not found exception");
     }
+
+    @Test
+    public void updateProduct() {
+        Product existingProduct = new Product();
+        existingProduct.setCategory("Hardware");
+        existingProduct.setProductName("Seagate Baracuda 500GB");
+        existingProduct.setNumberSold(BigInteger.valueOf(200));
+        existingProduct.setUnitPrice(55.50);
+
+        ProductDTO inputProductDTO = new ProductDTO();
+        inputProductDTO.setCategory("New Hardware"); // Updated value
+        inputProductDTO.setProductName("Seagate Baracuda 500GB");
+        inputProductDTO.setNumbersold(BigInteger.valueOf(250)); // Updated value
+        inputProductDTO.setPrice(55.50);
+
+        when(productRepository.findById(anyLong())).thenReturn(Optional.of(existingProduct));
+
+        doAnswer(invocation -> {
+            ProductDTO source = invocation.getArgument(0);
+            Product destination = invocation.getArgument(1);
+
+            // Mocking mapping from source to destination
+            destination.setCategory(source.getCategory());
+            destination.setProductName(source.getProductName());
+            destination.setNumberSold(source.getNumberSold());
+            destination.setUnitPrice(source.getUnitPrice());
+
+            return null;
+        }).when(modelMapper).map(any(ProductDTO.class), any(Product.class));
+
+        Product updatedProduct = productService.updateProduct(1L, inputProductDTO);
+        verify(productRepository).findById(anyLong());
+        verify(productRepository).save(updatedProduct);
+
+        assertEquals("New Hardware", updatedProduct.getCategory());
+        assertEquals("Seagate Baracuda 500GB", updatedProduct.getProductName());
+        assertEquals(BigInteger.valueOf(250), updatedProduct.getNumberSold());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void updateProductWillNullProduct(){
+        Optional<Product> op = Optional.empty();
+        when(productRepository.findById(anyLong())).thenReturn(op);
+        Product product = productService.updateProduct(1l, null);
+        fail("Didn't throw illegal argument exception");
+    }
+
 
     @Test
     public void convertToDTO() {
