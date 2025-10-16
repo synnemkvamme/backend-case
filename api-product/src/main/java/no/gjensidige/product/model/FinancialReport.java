@@ -1,12 +1,12 @@
 package no.gjensidige.product.model;
 
 import no.gjensidige.product.entity.Product;
+
 import java.sql.Timestamp;
 
 /**
- *  FinancialReport
- *
- *  The model we would like to fill with data in exercise 2
+ * FinancialReport
+ * The model we would like to fill with data in exercise 2
  *
  */
 
@@ -16,9 +16,18 @@ public class FinancialReport {
     Product highestMarginProduct;
     Product lowestMarginProduct;
     Product mostSoldProduct;
-    Double totalTurnover;
+    Product leastSoldProduct;
+    Double totalRevenue;
     Double totalCost;
     Double totalMargin;
+
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
 
     public Product getHighestMarginProduct() {
         return highestMarginProduct;
@@ -44,12 +53,20 @@ public class FinancialReport {
         this.mostSoldProduct = mostSoldProduct;
     }
 
-    public Double getTotalTurnover() {
-        return totalTurnover;
+    public Product getLeastSoldProduct() {
+        return leastSoldProduct;
     }
 
-    public void setTotalTurnover(Double totalTurnover) {
-        this.totalTurnover = totalTurnover;
+    public void setLeastSoldProduct(Product leastSoldProduct) {
+        this.leastSoldProduct = leastSoldProduct;
+    }
+
+    public Double getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public void setTotalRevenue(Double totalRevenue) {
+        this.totalRevenue = totalRevenue;
     }
 
     public Double getTotalCost() {
