@@ -38,12 +38,9 @@ public class ProductService {
 
     }
 
-    //@Todo create delete functionality
     public Product deleteProduct(Long id) {
-
-        Product p  = new Product();
-
-
+        Product p  = getProduct(id);
+        productRepository.delete(p);
         return p;
     }
 
@@ -55,12 +52,14 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    //@Todo create update functionality
     public Product updateProduct(Long id, ProductDTO inputProduct) {
-
-
-
-        throw new UnsupportedOperationException();
+        if (inputProduct == null){
+            throw new IllegalArgumentException("The input product can not be null.");
+        }
+        Product existingProduct = getProduct(id);
+        modelMapper.map(inputProduct, existingProduct); // Maps new fields from inputproduct to existing product
+        productRepository.save(existingProduct);
+        return existingProduct;
     }
 
 
