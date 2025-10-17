@@ -5,14 +5,13 @@ import no.gjensidige.product.exception.ProductNotFoundException;
 import no.gjensidige.product.entity.Product;
 import no.gjensidige.product.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * ProductService
- *
+ * <p>
  * Class responsible of data manipulation between dto and entity
  *
  *
@@ -21,11 +20,13 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    ModelMapper modelMapper;
+    public ProductService(ProductRepository productRepository, ModelMapper modelMapper) {
+        this.productRepository = productRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<Product> getAllProducts() {
 
@@ -39,7 +40,7 @@ public class ProductService {
     }
 
     public Product deleteProduct(Long id) {
-        Product p  = getProduct(id);
+        Product p = getProduct(id);
         productRepository.delete(p);
         return p;
     }
@@ -53,7 +54,7 @@ public class ProductService {
     }
 
     public Product updateProduct(Long id, ProductDTO inputProduct) {
-        if (inputProduct == null){
+        if (inputProduct == null) {
             throw new IllegalArgumentException("The input product can not be null.");
         }
         Product existingProduct = getProduct(id);
@@ -65,15 +66,13 @@ public class ProductService {
 
     public ProductDTO convertToDTO(Product product) {
 
-        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        return modelMapper.map(product, ProductDTO.class);
 
-        return productDTO;
     }
 
     public Product convertToEntity(ProductDTO productDTO) {
-        Product product = modelMapper.map(productDTO, Product.class);
 
-        return product;
+        return modelMapper.map(productDTO, Product.class);
 
     }
 

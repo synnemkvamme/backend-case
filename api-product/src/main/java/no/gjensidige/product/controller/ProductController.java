@@ -3,7 +3,6 @@ package no.gjensidige.product.controller;
 import no.gjensidige.product.dto.ProductDTO;
 import no.gjensidige.product.entity.Product;
 import no.gjensidige.product.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping(name = "Products", value = "products")
 public class ProductController {
+    private final ProductService productService;
 
-    @Autowired
-    ProductService productService;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping(value = "/")
     List<Product> getProducts() {
